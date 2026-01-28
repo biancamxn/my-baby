@@ -2,191 +2,109 @@
 <html lang="ro">
 <head>
 <meta charset="UTF-8">
-<title>💖 My Baby 💖</title>
-
+<title>Valentine Surprise</title>
 <style>
 body {
-    margin: 0;
-    background: linear-gradient(to bottom, #ffb6c1, #ff69b4);
-    text-align: center;
-    font-family: 'Comic Sans MS', cursive;
-    overflow: hidden;
+    margin:0;
+    font-family:'Arial', sans-serif;
+    background:pink;
+    text-align:center;
+    overflow:hidden;
 }
-
-h1 {
-    margin-top: 80px;
-    color: white;
+h1, p {
+    color:white;
 }
-
-p {
-    color: white;
-    font-size: 22px;
-}
-
-.buttons {
-    margin-top: 40px;
-}
-
 button {
     padding: 15px 30px;
-    font-size: 20px;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    margin: 10px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    margin:10px;
+    position:relative;
+    z-index:10;
 }
-
-#yes {
-    background: #ff1493;
-    color: white;
-}
-
-#no {
-    background: white;
-    color: #ff1493;
-    position: absolute;
-}
-
-/* inimioare */
+#yes { background:red; color:white; }
+#no { background:white; color:red; position:absolute; top:200px; left:200px; }
 .heart {
-    position: fixed;
-    top: -10px;
-    font-size: 24px;
-    animation: fall linear infinite;
+    position:fixed;
+    top:-30px;
+    font-size:24px;
+    animation:fall linear infinite;
 }
-
 @keyframes fall {
-    to {
-        transform: translateY(110vh);
-    }
+    to { transform: translateY(110vh); }
 }
-
-/* ECRAN FINAL */
 #finalScreen {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle, #ff69b4, #ff1493, #6a0036);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 1s ease-in;
-    z-index: 999;
+    position:fixed;
+    inset:0;
+    background: radial-gradient(circle,#ff69b4,#ff1493,#6a0036);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    opacity:0;
+    transition:opacity 1s;
+    z-index:999;
 }
-
-#finalScreen.active {
-    opacity: 1;
-}
-
+#finalScreen.active { opacity:1; }
 #finalScreen h1 {
-    color: white;
-    font-size: 48px;
-    transition: text-shadow 0.15s ease, transform 0.15s ease;
+    color:white;
+    font-size:48px;
+    transition:text-shadow 0.15s, transform 0.15s;
 }
 </style>
 </head>
-
 <body>
 
-<h1>💖 Hei iubire 💖</h1>
-<p>
-On Valentine's Day I have a really serious question 😏  
-<br><br>
-Do you wanna be my forever? 💕
-</p>
+<h1>💖 Hey Baby 💖</h1>
+<p>Do you wanna be my forever? 💕</p>
 
-<div class="buttons">
-    <button id="yes" onclick="yesClicked()">YES 💘</button>
-    <button id="no" onmouseover="moveNo()">NO 😈</button>
-</div>
+<button id="yes">YES 💘</button>
+<button id="no">NO 😈</button>
 
-<!-- ECRAN FINAL -->
 <div id="finalScreen">
-    <h1 id="finalText">
-        I would choose you<br>
-        in every universe ✨💖
-    </h1>
+<h1 id="finalText">I would choose you<br>in every universe ✨💖</h1>
 </div>
 
 <script>
+// audio
 const audio = new Audio("music.mp3");
-audio.crossOrigin = "anonymous";
 
-let audioContext, analyser, source, dataArray;
-
-function yesClicked() {
-    document.body.innerHTML = "";
+// DA
+document.getElementById("yes").addEventListener("click", ()=>{
+    // arată ecranul final
+    document.body.innerHTML="";
     document.body.appendChild(document.getElementById("finalScreen"));
-
     const screen = document.getElementById("finalScreen");
-    screen.style.display = "flex";
+    screen.style.display="flex";
+    setTimeout(()=>{screen.classList.add("active");},100);
 
-    setTimeout(() => {
-        screen.classList.add("active");
-    }, 100);
-
-    startAudioAnalysis();
-}
-
-function startAudioAnalysis() {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;
-
-    source = audioContext.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
-
-    dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-    audio.loop = true;
+    // porneste muzica
+    audio.loop=true;
     audio.play();
 
-    beatLoop();
-}
+    // inimioare
+    setInterval(()=>{
+        const heart=document.createElement("div");
+        heart.className="heart";
+        heart.innerHTML="💖";
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.fontSize=(Math.random()*30+20)+"px";
+        heart.style.animationDuration=(Math.random()*3+2)+"s";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),5000);
+    },300);
+});
 
-function beatLoop() {
-    analyser.getByteFrequencyData(dataArray);
-
-    let sum = 0;
-    for (let i = 0; i < dataArray.length; i++) {
-        sum += dataArray[i];
-    }
-
-    let average = sum / dataArray.length;
-    const intensity = Math.min(average * 2, 255);
-
-    const text = document.getElementById("finalText");
-    text.style.textShadow = `
-        0 0 ${intensity / 6}px #fff,
-        0 0 ${intensity / 3}px #ffb6c1,
-        0 0 ${intensity}px #ff1493
-    `;
-    text.style.transform = scale(${1 + average / 500});
-
-    requestAnimationFrame(beatLoop);
-}
-
-function moveNo() {
+// NU care fuge
+document.getElementById("no").addEventListener("mouseover", ()=>{
     const noBtn = document.getElementById("no");
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 50);
+    const x = Math.random()*(window.innerWidth-100);
+    const y = Math.random()*(window.innerHeight-50);
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
-}
-
-/* inimioare */
-setInterval(() => {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = Math.random() * 3 + 2 + "s";
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 5000);
-}, 300);
+});
 </script>
 
 </body>
