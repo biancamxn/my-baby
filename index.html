@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Surprise</title>
+<style>
+body {
+    text-align:center;
+    font-family: Arial, sans-serif;
+    background: pink;
+    color: white;
+    padding-top:100px;
+    overflow:hidden;
+}
+button {
+    padding: 15px 30px;
+    font-size: 20px;
+    border:none;
+    border-radius: 10px;
+    cursor:pointer;
+    background:red;
+    color:white;
+    margin-top:20px;
+}
+.heart {
+    position:fixed;
+    top:-30px;
+    font-size:24px;
+    animation:fall linear infinite;
+}
+@keyframes fall {
+    to { transform: translateY(110vh); }
+}
+</style>
+</head>
+<body>
+
+<h1>💖 Hey baby 💖</h1>
+<p>Do you wanna be my forever? 💕</p>
+
+<button id="playButton">Apasă pentru muzică 🎵</button>
+
+<script>
+const audio = new Audio("music.mp3");
+
+document.getElementById("playButton").addEventListener("click", () => {
+    audio.loop = true;
+    audio.play();
+
+    // Creează inimioare încontinuu
+    setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = (Math.random()*30+20) + "px";
+        heart.style.animationDuration = (Math.random()*3+2) + "s";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),5000);
+    }, 300);
+});
+</script>
+
+</body>
+</html>
